@@ -4,12 +4,12 @@ This is a vim plugin to automatically create the header files for classes and th
 For this to work, you need to have the following directory hierarchy:
 >
 ><Project Name>
->    |
->    +----src
->    |     +-----main.cpp <-- This is where you are placing the #include "MyClass.h"
->    |     +----- MyClass.cpp  <---- will be created when you type <leader>d while inside MyClass.h
->    +----include
->    +---- MyClass.h  <--- will automatically be created here after pressing <leader>h with the cursor at "MyClass.h" while editing main.cpp
+>>    |
+>>    +----src
+>>    |     +-----main.cpp <-- This is where you are placing the #include "MyClass.h"
+>>    |     +----- MyClass.cpp  <---- will be created when you type <leader>d while inside MyClass.h
+>>    +----include
+>>    +---- MyClass.h  <--- will automatically be created here after pressing <leader>h with the cursor at "MyClass.h" while editing main.cpp
 >    
 So, you have a dedicated project directory and underneath this will be the "src" directory and "include" directory as shown above. Your
 "main.cpp" will be located at the "src" directory. When you edit this "main.cpp" and added the line **#include "MyClass.h"**, you could
