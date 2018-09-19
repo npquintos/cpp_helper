@@ -21,3 +21,8 @@ line select a function definition, press \<leader\>d to define this function in 
 under the "src" directory with this action. It create a skeleton function, ready to be filled-up.
   
   At this point, you have 3 panes open in vim: main.cpp, MyClass.h, and MyClass.cpp
+
+To Summarize:
+1.  Edit main.cpp and add the entry **#include "MyClass.h"**
+2.  Place cursor anywhere inside **MyClass.h** then press \<leader\>h --> this will create **MyClass.h** file in the **include** directory and open that header file.
+3.  Move your cursor to the header file, press **\<leader\>c** to capture the class name, and then, highlight any lines (including line comments preceeding the function declaration), then press **\<leader\>c** --> this will create the **MyClass.cpp** function implementation under the **src** directory and open it. **MyClass.cpp** will contain skeleton function definitions for the highlighted lines in MyClass.h.
