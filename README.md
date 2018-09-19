@@ -13,7 +13,7 @@ For this to work, you need to have the following directory hierarchy:
 ```
 So, you have a dedicated project directory and underneath this will be the "src" directory and "include" directory as shown above. Your
 "main.cpp" will be located at the "src" directory. When you edit this "main.cpp" and added the line **#include "MyClass.h"**, you could
-place the cursor anywhere in the "MyClass.h" word and then hit <leader>h. This will then create "MyClass.h" header file under the "include"
+place the cursor anywhere in the "MyClass.h" word and then hit \<leader\>h. This will then create "MyClass.h" header file under the "include"
 directory, and then open that file in a split pane, ready for editing. Skeletal contents are automatically created.
     
 If you move your cursor in the "MyClass.h" file, press <leader>c to capture the class name in the "c" register. Then, you could visually 
