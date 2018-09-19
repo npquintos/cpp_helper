@@ -1,4 +1,4 @@
-" set splitright
+set splitright
 " map <silent> <leader>h :call CreateHeader()<cr><cr>
 " map <silent> <leader>d :call CreateCode()<cr><cr>
 " map <silent> <leader>c :call ExtractClass()<cr>
@@ -30,13 +30,13 @@ function! CreateHeader()
                 \ '        // Move Constructor',
                 \ '        ' . g:bliss_class . '('.g:bliss_class.' &&rhs);',
                 \ '        // Copy assignment',
-                \ '        ' . g:bliss_class . ' & operator=(const '.g:bliss_class.' &rhs);',
+                \ '        ' . g:bliss_class . ' &operator=(const '.g:bliss_class.' &rhs);',
                 \ '        // Move assignment',
-                \ '        ' . g:bliss_class . ' & operator=('.g:bliss_class.' &&rhs);',
+                \ '        ' . g:bliss_class . ' &operator=('.g:bliss_class.' &&rhs);',
                 \ '        // Destructor',
                 \ '        virtual ~' . g:bliss_class . '();',
                 \ '        // Increment by 1 and return reference',
-                \ '        //' . g:bliss_class . ' & operator++();',
+                \ '        //' . g:bliss_class . ' &operator++();',
                 \ '        // Increment by 1 and return object',
                 \ '        //' . g:bliss_class . ' operator++();',
                 \ '        // Equality Comparison',
@@ -46,13 +46,13 @@ function! CreateHeader()
                 \ '        // Subtraction',
                 \ '        //const '.g:bliss_class.' operator-(const '.g:bliss_class.' &rhs) const;',
                 \ '        // Compound Increment',
-                \ '        //'.g:bliss_class.' & operator+=(const '.g:bliss_class.' &rhs);',
+                \ '        //'.g:bliss_class.' &operator+=(const '.g:bliss_class.' &rhs);',
                 \ '        // Compound Decrement',
-                \ '        //'.g:bliss_class.' & operator-=(const '.g:bliss_class.' &rhs);',
+                \ '        //'.g:bliss_class.' &operator-=(const '.g:bliss_class.' &rhs);',
                 \ '        // Compound multiply',
-                \ '        //'.g:bliss_class.' & operator*=(const '.g:bliss_class.' &rhs);',
+                \ '        //'.g:bliss_class.' &operator*=(const '.g:bliss_class.' &rhs);',
                 \ '        // Compound divide',
-                \ '        //'.g:bliss_class.' & operator/=(const '.g:bliss_class.' &rhs);',
+                \ '        //'.g:bliss_class.' &operator/=(const '.g:bliss_class.' &rhs);',
                 \ '        // Function operator',
                 \ '        //void operator()();',
                 \ '',
@@ -92,12 +92,12 @@ function! CreateCode() range
     let l:newFile = l:oldFile[:-3]
     let l:old_func_headings = GetFuncHeadings(l:oldFile)
     for l:line in l:lines
+        if LineIsInList(l:old_func_headings, l:line)
+            continue
+        endif
         if l:line =~ '^\s*//'
             call add(l:newFile, '')
             call add(l:newFile, l:line)
-            continue
-        endif
-        if LineIsInList(l:old_func_headings, l:line)
             continue
         endif
         let l:fd =  FunctionDef(l:line)
@@ -107,7 +107,7 @@ function! CreateCode() range
     endfor
     call add(l:newFile, '')
     call add(l:newFile, l:oldFile[-1])
-    call writefile(l:newFile, l:fin))
+    call writefile(l:newFile, l:fin)
     if bufwinnr('../src/'.l:fin) < 0
         execute("sp ../src/".l:fin)
         normal! <C-k>/todo<cr>
@@ -116,8 +116,10 @@ endfunction
 
 function! LineIsInList(lineList, line)
     if len(a:lineList) != 0
+        let l:line = substitute(a:line, '\~'.g:bliss_class, '\\~'.g:bliss_class, '')
+        let l:line = substitute(a:line, 'operator\*=(', 'operator\\*=(', '')
         for l:row in a:lineList
-            if l:row =~? a:line
+            if l:row =~ l:line
                 return 1
             endif
         endfor
@@ -200,6 +202,18 @@ function!  FunctionDef(line)
         call add(l:result, '        return *this;')
         call add(l:result, '')
         call add(l:result, '    // deallocate, allocate new space, copy values')
+        call add(l:result, '')
+        call add(l:result, '    return *this')
+    elseif l:temp =~ 'operator=('.g:bliss_class
+        call add(l:result, '    if (this == &rhs)')
+        call add(l:result, '        return *this;')
+        call add(l:result, '')
+        call add(l:result, '    // deallocate, allocate new space, copy values')
+        call add(l:result, '')
+        call add(l:result, '    return *this')
+    elseif l:temp =~ '\~'.g:bliss_class
+        call add(l:result, '    // deallocate resources')
+        call add(l:result, '    delete ptr;')
     elseif l:temp =~ 'operator==(const '
         call add(l:result, '    // compare and return bool result')
     elseif l:temp =~ 'operator!=(const '
@@ -220,7 +234,7 @@ function!  FunctionDef(line)
         call add(l:result, '    '.g:bliss_class.' result = *this;')
         call add(l:result, '    result /= rhs;')
         call add(l:result, '    return result;')
-    elseif l:temp =~ 'operator\+=(const '
+    elseif l:temp =~ 'operator+=(const '
         call add(l:result, '    // do compound addition work')
         call add(l:result, '')
         call add(l:result, '    return *this;')
@@ -234,6 +248,10 @@ function!  FunctionDef(line)
         call add(l:result, '    return *this;')
     elseif l:temp =~ 'operator\/=(const '
         call add(l:result, '    // do compound division work')
+        call add(l:result, '')
+        call add(l:result, '    return *this;')
+    elseif l:temp =~ 'operator++('
+        call add(l:result, '    // implement your increment operation')
         call add(l:result, '')
         call add(l:result, '    return *this;')
     else
