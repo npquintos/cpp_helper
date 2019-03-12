@@ -3,6 +3,22 @@ set splitright
 " map <silent> <leader>d :call CreateCode()<cr><cr>
 " map <silent> <leader>c :call ExtractClass()<cr>
 
+" When programming in C++, you always have to do something like
+" std::cout << "string" << std::endl;
+" typing ;p will give you
+" std::cout << "<cursor here>" << std::endl;
+map <leader>p astd::cout << "xxx" << std::endl;<ESC>?xxx<CR>cw
+imap <leader>p <ESC>astd::cout << "xxx" << std::endl;<ESC>?xxx<CR>cw
+
+" It is also uncommon that you have something like
+" std::cout << "string<cursor anywhere here>" << std::endl;
+" and your cursor is in the string portion, and you want to
+" add variables to be printed as well after it. Using
+" ;a will result to
+" std::cout << "string" << <cursor here>  << std::endl;
+map <Leader>a /std<CR>ixxx << <ESC>?xxx<CR>cw
+imap <Leader>a <ESC>/std<CR>ixxx << <ESC>?xxx<CR>cw
+
 " Will create header files for header name under the cursor
 function! CreateHeader()
     let mycurf=expand("<cfile>")
