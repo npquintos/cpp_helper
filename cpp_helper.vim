@@ -19,9 +19,17 @@ imap <leader>p <ESC>astd::cout << "xxx" << std::endl;<ESC>?xxx<CR>cw
 map <Leader>a /std<CR>ixxx << <ESC>?xxx<CR>cw
 imap <Leader>a <ESC>/std<CR>ixxx << <ESC>?xxx<CR>cw
 
+
+" BEST PRACTICES TEMPLATE ========================================
+
 " Best practice for for loop
 imap <Leader>f for(const auto &value: container) {
 }<ESC>?container<CR>cw
+
+
+
+" END OF BEST PRACTICES TEMPLATE =================================
+
 
 " Will create header files for header name under the cursor
 function! CreateHeader()
