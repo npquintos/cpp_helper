@@ -34,7 +34,7 @@ imap <Leader>f for(const auto &value: container) {
 " Will create header files for header name under the cursor
 function! CreateHeader()
     let mycurf=expand("<cfile>")
-    let g:bliss_class = substitute(mycurf, ".h", "", "")
+    let g:bliss_class = substitute(mycurf, ".hpp", "", "")
     if empty(glob('../include/'.mycurf))
         let l:contents = [ 
                 \ '#ifndef __' . g:bliss_class . '__h',
@@ -115,7 +115,7 @@ function! CreateCode() range
     if !empty(glob(l:fin))
         let l:oldFile = readfile(l:fin)
     else
-        let l:oldFile = ['#include "'.g:bliss_class.'.h"', 'namespace qbliss {', '', '} // namespace qbliss']
+        let l:oldFile = ['#include "'.g:bliss_class.'.hpp"', 'namespace qbliss {', '', '} // namespace qbliss']
     endif
     let l:newFile = l:oldFile[:-3]
     let l:old_func_headings = GetFuncHeadings(l:oldFile)
