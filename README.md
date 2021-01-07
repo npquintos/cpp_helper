@@ -7,7 +7,7 @@ For this to work, you need to have the following directory hierarchy:
     |
     +----src
     |     +-----main.cpp <-- This is where you are placing the #include "MyClass.hpp"
-    |     +----- MyClass.cpp  <---- will be created when you type <leader>d while inside MyClass.h
+    |     +----- MyClass.cpp  <---- will be created when you type <leader>d while inside MyClass.hpp
     +----include
            +---- MyClass.hpp  <--- will automatically be created here after pressing <leader>h with the cursor at "MyClass.hpp" while editing main.cpp
 ```
