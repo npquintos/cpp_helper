@@ -20,7 +20,7 @@ If you move your cursor in the "MyClass.hpp" file, press \<leader\>c to capture 
 line select a function definition, press \<leader\>d to define this function in "MyClass.cpp" file. "MyClass.cpp" file is automatically created
 under the "src" directory with this action. It create a skeleton function, ready to be filled-up.
   
-  At this point, you have 3 panes open in vim: main.cpp, MyClass.h, and MyClass.cpp
+  At this point, you have 3 panes open in vim: main.cpp, MyClass.hpp, and MyClass.cpp
 
 To Summarize:
 1.  Edit **main.cpp** (which should be inside the **src** directory) and add the entry **#include "MyClass.hpp"**
