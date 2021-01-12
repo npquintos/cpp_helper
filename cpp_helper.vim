@@ -9,7 +9,7 @@ set splitright
 " std::cout << "<cursor here>" << std::endl;
 map <leader>p astd::cout << "xxx" << std::endl;<ESC>?xxx<CR>cw
 imap <leader>p <ESC>astd::cout << "xxx" << std::endl;<ESC>?xxx<CR>cw
-imap <leader>u std::unique_ptr<ClassX> var{new ClassX(params)};<ESC>^/ClassX<CR>
+imap <leader>q std::unique_ptr<ClassX> var{new ClassX(params)};<ESC>^/ClassX<CR>
 
 " It is also uncommon that you have something like
 " std::cout << "string<cursor anywhere here>" << std::endl;
