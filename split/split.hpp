@@ -6,25 +6,12 @@
 
 class Qstring {
     // Usage:
-    // auto xsplit = Qstring(line).split(delimeter);
-    // for (auto word : xsplit) {
+    // for (auto word : Qstring(word_to_split).split(delimeter_word) {
     //      std::cout << word << std::endl
     // }
-    // if 'word' is to be split, 'ptr' below will
-    // hold the starting indexes of the start of
-    // the word. 'word' will then be modified to
-    // be delimited with \0. For example, say you have
-    // this word and you want to split with 'abcd' as
-    // delimiter, similar to word.split('abcd') in python
-    // for splitting -> "abcdFirstabcdSecondabcdThirdabcd"
-    //                   01234567890123456789012345678901
-    //                              1         2         3
-    //                   ^   ^        ^         ^        ^
-    //                   |   |        |         |        |
-    // ptr --------------+---+--------+---------+--------+
-    //                 s+0,0
-    //                     s+4,5
-    // modified word ->"\0bcdFirst\0bcdSecond\0bcdThird\0bcd"
+    // word_to_split could be C-style string, std::string, std::string_view
+    // delimeter word could be C-style string, std::string_view
+   
     std::string_view v_word;
     public:
         Qstring(const char *xword) {
@@ -50,7 +37,6 @@ class Qstring {
             const auto v_word_start = v_word.begin();
             int prev_index = 0;
             for (auto line_char : v_word) {
-                // std::cout << line_char << *(pdelim0+match)<< " ";
                 ++index;
                 if (line_char == *(pdelim0+match)) {
                     ++match;
@@ -64,7 +50,6 @@ class Qstring {
                     match = 0;
                 }
             }
-            // std::cout << index << " " << prev_index << " " << delim_length;
             if (prev_index == index) {
                 split_words.push_back(std::basic_string_view(v_word_start+prev_index, 0));
             }
