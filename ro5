@@ -1,0 +1,20 @@
+// Template for the Rule Of 5
+
+class Ro5 {
+    private:
+        A classA;
+        B *classBptr;
+        C *malloc_ptr;
+        int private1;
+        std::container private2;
+
+    public:
+        Ro5() : classA({}), classBptr(nullptr), malloc_ptr(nullptr), private1(0), private2(std::container{}) {};
+        Ro5(A anotherClassA, B *anotherClassBptr, C *anotherMallocPtr, int i, std::container anotherContainer) : 
+            classA(anotherClassA), // will invoke copy constructor of A
+        };
+
+        // copy constructor
+        Ro5(const Ro5 &other) : manually_allocated_class1_ptr(*other.manually_allocated_class1_ptr), manually_allocated_class1_ptr(other.manually_allocated_class2_ptr), private1(0), private2(std::container()) {};
+
+};
