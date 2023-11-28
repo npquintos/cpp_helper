@@ -9,12 +9,72 @@ class Ro5 {
         std::container private2;
 
     public:
+        // default constructor, happens in places where you make delarations without initialization. eg:
+        // Ro5 my_class;
+        // Now, if don't want invoking your default constructor without initialization, you need to
+        // replace the next line with: "Ro5() = delete;" If you do that, statements like
+        // Ro5 my_class; will throw compilation error, but statement like
+        // Ro5 my_class{arg1, arg2, ..., argk}; would not
+
         Ro5() : classA({}), classBptr(nullptr), malloc_ptr(nullptr), private1(0), private2(std::container{}) {};
+
+        // parameterized constructor
         Ro5(A anotherClassA, B *anotherClassBptr, C *anotherMallocPtr, int i, std::container anotherContainer) : 
             classA(anotherClassA), // will invoke copy constructor of A
+            classBptr(B(*anotherClassBptr)),
+            malloc_ptr(std::memcpy(std::malloc(sizeof(C)), anotherMallocPtr, sizeof(C))),
+            private1{i},
+            private2{anotherContainer} // std::container will automatically initialized with anotherContainer values
+        {};
+
+        ~Ro5() {
+            del malloc_ptr;
+            del classBptr; // is this how you invoke destructor for class B?
+            // remaining members are automatically freed
+        }
+
+        // Copy constructor
+        Ro5(const Ro5 &other) : 
+            classA(other.classA),  // will invoke copy constructor of A
+            malloc_ptr{malloc(sizeof(C))}, // newly allocated memory is still empty, will be filled in the body later
+            private1{other.private1}, 
+            private2{other.private2} // std containers will auto-initialize
+                                        {
+            classBptr = &B(*other.classBptr); // invoke copy constructor of B with contents of other class B, then return address
+            *malloc_ptr = *other.malloc_ptr; // contents of other malloc'd memory is copied over to the newly allocated memory
         };
 
-        // copy constructor
-        Ro5(const Ro5 &other) : manually_allocated_class1_ptr(*other.manually_allocated_class1_ptr), manually_allocated_class1_ptr(other.manually_allocated_class2_ptr), private1(0), private2(std::container()) {};
+        // Move Constructor
+        Ro5(Ro5 &&other) : 
+            classA(other.classA),  // will invoke move constructor of A
+            malloc_ptr{other.malloc_ptr}, // both pointers point to same storage area
+            private1{other.private1}, 
+            private2(other.private2) // invoke move constructor of std container
+                                        {
+            classBptr = std::move(*(other.classBptr)); // invoke constructor of B with contents of other class B, then return address
+            other.classBptr = std::nullptr;
+            other.malloc_ptr = std::nullptr;
+        };
+        // Copy assignment Operator
+        Ro5 &operator=(const Ro5 &other) {
+            if (this == other) return *this;
+            classA = other.classA; // will invoke copy assignment operator of A
+            classBptr = &B(*other.classBptr);
+            malloc_ptr = malloc(sizeof(C));
+            *malloc_ptr = *other.malloc_ptr;
+            private1 = other.private1;
+            private2 = other.private2; // will invoke copy assignment operator of standard container
+            return *this;
+        };
+
+        // Move assignment Operator
+        Ro5 &operator=(Ro5 &&other) {
+            if (this == other) return *this;
+            classA = std::exchange(other.classA, std::nullptr);
+            classBptr = std::move(*(other.classBptr)); // invoke constructor of B with contents of other class B, then return address
+            malloc_ptr = other.malloc_ptr; // both pointers point to same storage area
+            other.malloc_ptr = std::nullptr;
+            return *this;
+        };
 
 };
