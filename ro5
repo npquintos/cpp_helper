@@ -45,34 +45,46 @@ Ro5() : classA({}), classBptr(new B{}), malloc_ptr(new C{}), private1(0), privat
         // Move Constructor
         Ro5(Ro5 &&other) :
             classA(other.classA),  // will invoke move constructor of A
-            malloc_ptr{other.malloc_ptr}, // both pointers point to same storage area
+            classBptr{other.classBptr}; // copy the pointer to heap address
+            malloc_ptr{other.malloc_ptr}, // copy the pointer to heap address
             private1{other.private1},
             private2{other.private2}, // invoke move constructor of std container
-            classBptr{new B(*(other.classBptr))}; // invoke constructor of B with contents of other class B, then return address
+            
         {
-            other.classBptr = nullptr;
-            other.malloc_ptr = nullptr;
+            other.classBptr = nullptr; // release the other heap allocated mem
+            other.malloc_ptr = nullptr; // release the other heap allocated mem
         };
 
         // Copy assignment Operator
         Ro5 &operator=(const Ro5 &other) {
-            if (this == other) return *this;
-            classA = other.classA; // will invoke copy assignment operator of A
-            classBptr = &B(*other.classBptr);
-            malloc_ptr = malloc(sizeof(C));
-            *malloc_ptr = *other.malloc_ptr;
-            private1 = other.private1;
-            private2 = other.private2; // will invoke copy assignment operator of standard container
+            if (this != other) {
+                classA = other.classA; // will invoke copy assignment operator of A
+
+                delete classBptr; // always do for heap allocated mem
+                classBptr = new B(*other.classBptr); // use 'new' for class pointer
+
+                delete malloc_ptr; // always do for heap allocated mem
+                malloc_ptr = std::memcpy(std::malloc(sizeof(C)), other.malloc_ptr, sizeof(C));
+
+                private1 = other.private1;
+                private2 = other.private2; // will invoke copy assignment operator of standard container
+            }
             return *this;
         };
 
         // Move assignment Operator
         Ro5 &operator=(Ro5 &&other) {
-            if (this == other) return *this;
-            classA = std::exchange(other.classA, std::nullptr);
-            classBptr = std::move(*(other.classBptr)); // invoke constructor of B with contents of other class B, then return address
-            malloc_ptr = other.malloc_ptr; // both pointers point to same storage area
-            other.malloc_ptr = std::nullptr;
+            if (this != other) {
+                classA = std::exchange(other.classA, std::nullptr);
+
+                delete classBptr; // delete previous heap mem allocation
+                classBptr = other.classBptr; // point it to new heap location
+                other.classBptr = std::nullptr; // release previous hold on this heap
+
+                delete malloc_ptr // delete previous heap mem allocation
+                malloc_ptr = other.malloc_ptr; // point it to new heap location
+                other.malloc_ptr = std::nullptr; // release previous hold on this heap
+            }
             return *this;
         };
 
