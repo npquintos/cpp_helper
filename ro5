@@ -43,27 +43,17 @@ Ro5() : classA({}), classBptr(new B{}), malloc_ptr(new C{}), private1(0), privat
         {};
 
         // Move Constructor
-        Ro5(Ro5 &&other) {
-            if (&other == this)
-                return *this;
-
-
+        Ro5(Ro5 &&other) :
             classA(other.classA),  // will invoke move constructor of A
             malloc_ptr{other.malloc_ptr}, // both pointers point to same storage area
-            private1 = other.private1; 
-            private2 = other.private2; // invoke move constructor of std container
-            del classBptr;
-            classBptr = std::move(*(other.classBptr)); // invoke constructor of B with contents of other class B, then return address
-            other.classBptr = std::nullptr;
-            other.malloc_ptr = std::nullptr;
-
-
-
-
-
-
-            return *this
+            private1{other.private1},
+            private2{other.private2}, // invoke move constructor of std container
+            classBptr{new B(*(other.classBptr))}; // invoke constructor of B with contents of other class B, then return address
+        {
+            other.classBptr = nullptr;
+            other.malloc_ptr = nullptr;
         };
+
         // Copy assignment Operator
         Ro5 &operator=(const Ro5 &other) {
             if (this == other) return *this;
